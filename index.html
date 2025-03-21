@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliDB Enterprise Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .category {
+            flex: 1;
+            min-width: 300px;
+            margin: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .quick-launch {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .clickable {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function fetchData(toolId) {
+            if (toolId === 1) {
+                fetch('http://127.0.0.1:8000/long-running-queries')
+                    .then(response => response.json())
+                    .then(data => displayResults(data))
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        displayResults({
+                            "status": 1,
+                            "tool_number": 1,
+                            "heading": "Long Running Queries",
+                            "use_case": "Check Queries which are running longer than 1 minute",
+                            "data": [
+                                {"pid": "1423", "Duration": "1:05:23", "query": "SELECT * FROM orders WHERE status = 1", "state": "Active"},
+                                {"pid": "3851", "Duration": "2:15:45", "query": "UPDATE users SET last_login = NOW()", "state": "Idle in transaction"},
+                                {"pid": "9472", "Duration": "1:30:12", "query": "VACUUM ANALYZE large_table", "state": "Active"},
+                                {"pid": "2847", "Duration": "3:22:10", "query": "DELETE FROM audit_logs WHERE date < '2024-01'", "state": "Active"}
+                            ]
+                        });
+                    });
+            }
+        }
+
+        function displayResults(data) {
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `<h2>${data.heading}</h2><p>${data.use_case}</p>`;
+            if (data.data.length > 0) {
+                let table = `<table><tr><th>PID</th><th>Duration</th><th>Query</th><th>State</th></tr>`;
+                data.data.forEach(row => {
+                    table += `<tr><td>${row.pid}</td><td>${row.Duration}</td><td>${row.query}</td><td>${row.state}</td></tr>`;
+                });
+                table += `</table>`;
+                resultsDiv.innerHTML += table;
+            } else {
+                resultsDiv.innerHTML += `<p>No long-running queries found.</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>IntelliDB Enterprise Tools</h1>
+        <h2>Professional Edition v17.0</h2>
+        
+        <div class="categories">
+            <div class="category">
+                <h2>🚀 Performance</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#1</td><td class="clickable" onclick="fetchData(1)">Check long running queries</td></tr>
+                    <tr><td>#2</td><td>Size info for all tables</td></tr>
+                    <tr><td>#3</td><td>Table and index size</td></tr>
+                    <tr><td>#4</td><td>Transaction ID Monitor</td></tr>
+                    <tr><td>#5</td><td>Vacuum statistics</td></tr>
+                    <tr><td>#6</td><td>Wait Events</td></tr>
+                    <tr><td>#7</td><td>Streaming replication lag</td></tr>
+                    <tr><td>#8</td><td>Lag in bytes </td></tr>
+                    <tr><td>#9</td><td>Buffer blocks</td></tr>
+                    <tr><td>#10</td><td>Schema size </td></tr>
+                    
+
+                </table>
+            </div>
+            
+            <div class="category">
+                <h2>⚙️ System Management</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#11</td><td>Replication slot status</td></tr>
+                    <tr><td>#12</td><td>Wraparound</td></tr>
+                    <tr><td>#13</td><td>Blocking query</td></tr>
+                    <tr><td>#14</td><td>Bloat</td></tr>
+                    <tr><td>#15</td><td>Sessions</td></tr>
+                    <tr><td>#16</td><td>States</td></tr>
+                    <tr><td>#17</td><td>Locks</td></tr>
+                    <tr><td>#18</td><td>Query Metrics</td></tr>
+                    <tr><td>#19</td><td>Display Config File</td></tr>
+                    <tr><td>#20</td><td>Vacuum</td></tr>
+
+                </table>
+            </div>
+            
+            <div class="category">
+                <h2>🛠️ Maintenance</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#21</td><td>Vacuum a Specific Table</td></tr>
+                    <tr><td>#22</td><td>Vacuum Analyze</td></tr>
+                    <tr><td>#23</td><td>Cache Scan</td></tr>
+                    <tr><td>#24</td><td>I/O Scan</td></tr>
+                    <tr><td>#25</td><td>C-Scanner</td></tr>
+                    <tr><td>#26</td><td> X-ray C transactions</td></tr>
+                    <tr><td>#27</td><td>Xray R Blocks</td></tr>
+                    <tr><td>#28</td><td>X-ray W Blocks</td></tr>
+                    <tr><td>#29</td><td>X-ray Compute RT</td></tr>
+                    <tr><td>#30</td><td>X-ray Memory RT</td></tr>
+                </table>
+            </div>
+
+            <div class="category">
+                <h2>🔍 Dignostic</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#31</td><td>Disk I/O Scan</td></tr>
+                    <tr><td>#32</td><td>X-ray Disk</td></tr>
+                    <tr><td>#33</td><td>Data Growth</td></tr>
+                    <tr><td>#34</td><td>X-ray Replica</td></tr>
+                    <tr><td>#35</td><td>Query Diagnostics</td></tr>
+                    <tr><td>#36</td><td>Unconsumed Idx </td></tr>
+                    <tr><td>#37</td><td>Congestion</td></tr>
+                    <tr><td>#38</td><td>DB Size</td></tr>
+                    <tr><td>#39</td><td>X-ray Cluster (XC)</td></tr>
+                    <tr><td>#40</td><td>XC-Performance Metrics</td></tr>
+                </table>
+            </div>
+
+            <div class="category">
+                <h2>📡 Cluster</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#41</td><td>XC-Resource Usage</td></tr>
+                    <tr><td>#42</td><td>XC-Connection Information</td></tr>
+                    <tr><td>#43</td><td>XC-Replication Info</td></tr>
+                    <tr><td>#44</td><td>Production DB Size</td></tr>
+                    <tr><td>#45</td><td>IntelliDB Diagnostic</td></tr>
+                    <tr><td>#46</td><td>IntelliDB Tuning</td></tr>
+                    <tr><td>#47</td><td>IntelliDB Xpert</td></tr>
+                    <tr><td>#48</td><td>IntelliDB Memory Xpert</td></tr>
+                    <tr><td>#49</td><td>IntelliDB Tuning Recom...</td></tr>
+                    <tr><td>#50</td><td>X-ray W-Event</td></tr>
+                </table>
+            </div>
+
+            <div class="category">
+                <h2>📈 Analysis</h2>
+                <table>
+                    <tr><th>ID</th><th>Tool</th></tr>
+                    <tr><td>#51</td><td>X-ray W-States</td></tr>
+                    <tr><td>#52</td><td> Conflicts</td></tr>
+                    <tr><td>#53</td><td>Check Locks</td></tr>
+                    <tr><td>#54</td><td>X-ray Buffers</td></tr>
+                    <tr><td>#55</td><td>X-ray Long Trx</td></tr>
+                    <tr><td>#56</td><td>Database Stats</td></tr>
+                    <tr><td>#57</td><td>Index Performance</td></tr>
+                    <tr><td>#58</td><td>Table Scan Analysis</td></tr>
+                    <tr><td>#59</td><td>Index Usage Stats</td></tr>
+                    
+                </table>
+            </div>
+        </div>
+        
+        <div class="quick-launch">
+            ⚡ Recommended Tools: #1 Long Running Queries, #15 Sessions, #35 Query Diagnostics, #45 IntelliDB Diagnostics, #46 IntelliDB Tuning
+        </div>
+        
+        <div id="results" class="results"></div>
+    </div>
+</body>
+</html>
